@@ -3,7 +3,7 @@ title: "PROJETO FINAL - APRENDIZAGEM SUPERVISIONADA"
 subtitle: "Bike Sharing Dataset(Regressão Linear Múltipla)" 
 author:
   - Pedro Henrique Mello Pereira - 230353025
-  - Bernardo Sousa - 230353006
+  - Bernardo Miguel Esperança Sousa - 230353006
 format: 
   pdf:
     toc: true
@@ -30,19 +30,19 @@ pacman::p_load(tidyverse, tidymodels, kableExtra, broom, corrplot, plotrix, lmte
 
 # Introdução:
 
-Este trabalho visa desenvolver um modelo de regressão linear múltipla para prever o número de aluguéis de bicicleta por dia com base em condições ambientais e sazonais. A análise será realizada utilizando o dataset "bikesharing". Neste estudo, pretendemos explorar como diferentes variáveis, como estação do ano, ano, mês, hora do dia, feriado, dia da semana e condições meteorológicas, influenciam o número de aluguéis de bicicleta.
+Este trabalho visa desenvolver um modelo de regressão linear múltipla para prever o número de aluguéis de bicicleta por dia com base em condições ambientais e sazonais. A análise será realizada utilizando o dataset "bikesharing" e tendo como consideração sua sub-divisão "day", não tendo sido feito portanto com base no dataset "hour". Neste estudo, pretendemos explorar como diferentes variáveis, como estação do ano, ano, mês, feriado, dia da semana e condições meteorológicas, influenciam o número de aluguéis de bicicleta.
 
 Além disso, é importante destacar que este trabalho será fundamentado na análise estatística do modelo de regressão linear múltipla. Através desta abordagem, pretendemos identificar quais variáveis independentes têm uma influência significativa no número de aluguéis de bicicleta, bem como avaliar a força e a direção dessas relações. Utilizaremos técnicas estatísticas para ajustar o modelo aos dados, testar sua adequação e interpretar os resultados. Ao compreendermos melhor como as variáveis ambientais e sazonais impactam a demanda por aluguéis de bicicleta, poderemos fornecer insights valiosos para empresas e organizações envolvidas no compartilhamento de bicicletas.
 
 ## Definição dos objetivos:
 
-O principal objetivo deste trabalho é desenvolver um modelo de regressão linear múltipla que seja capaz de prever o número de aluguéis de bicicleta por hora com base nas variáveis ambientais e sazonais fornecidas no conjunto de dados. Pretende-se entender a relação de fatores como estação do ano, hora do dia, condições meteorológicas, feriados e dia da semana com a demanda por aluguéis de bicicleta.
+O principal objetivo deste trabalho é desenvolver um modelo de regressão linear múltipla que seja capaz de prever o número de aluguéis de bicicleta por dia com base nas variáveis ambientais e sazonais fornecidas no conjunto de dados. Pretende-se entender a relação de fatores como estação do ano, condições meteorológicas, feriados e dia da semana com a demanda por aluguéis de bicicleta.
 
-Assim sendo, a variável que queremos prever é a "cnt" (contagem total de bicicletas alugadas, incluindo tanto as casuais quanto as registradas), que neste estudo será chamada de variável dependente e por vezes também pode assumir as nomenclaturas de variável resposta ou variável-alvo (target);
+Assim sendo, a variável que queremos prever é a "cnt" (contagem total de bicicletas alugadas, incluindo tanto as casuais quanto as registradas), que neste estudo será chamada de variável dependente e por vezes também pode assumir as nomenclaturas de variável resposta ou variável-alvo (target) e que pode ser compreendida como "a contagem total de bicicletas alugadas por dia, incluindo utilizadores casuais e registados";
 
 ## Apresentação do conjunto de dados e identificação das variáveis dependente e independentes:
 
-O dataset utilizado no presente estudo contém a contagem horária e diária de bicicletas alugadas entre os anos de 2011 e 2012 no sistema de compartilhamento de bicicletas Capital Bikeshare, juntamente com as informações meteorológicas e sazonais correspondentes.
+O dataset utilizado no presente estudo contém a contagem diária de bicicletas alugadas entre os anos de 2011 e 2012 no sistema de compartilhamento de bicicletas Capital Bikeshare, juntamente com as informações meteorológicas e sazonais correspondentes.
 
 A seguir apresentamos o dicionário das variáveis presentes no conjunto de dados, as quais utilizaremos como variáveis independentes/preditoras para prever o valor de "cnt", a saber:
 
@@ -89,11 +89,9 @@ df_bike %>%
 
 ```
 
-{{< pagebreak >}}
-
 ### Metadados do data set objeto do presente estudo:
 
-Usando a função "introduce" do pacote DataExplorer, vamos dar uma olhada em alguns dados importantes sobre o conjunto de dados bike sharing:
+Usando a função "introduce" do pacote DataExplorer, teremos um inmportante panorama geral sobre o conjunto de dados bike sharing:
 
 ```{r}
 introduce(df_bike) %>%
@@ -107,11 +105,11 @@ introduce(df_bike) %>%
 plot_missing(df_bike)
 ```
 
-Como podemos perceber, trata-se de um data set de dimensões relativamente pequenas, a saber 731 linhas e 16 colunas.
+Como podemos perceber, trata-se de um data set de dimensões relativamente pequenas, a saber 731 linhas (observações) e 16 colunas.
 
 Um dado importante trazido no gráfico de missing values é que não existe nenhuma entrada com valores ausentes, o que constitui um importante indicador de qualidade em relação ao preenchimento dos dados.
 
-Na próxima seção nos ocuparemos em limpar os dados, sobretudo para remover colunas que não fazem sentido e tornar tudo mais claro para a etapa de análise exploratória de dados e posterior desenvolvimento do modelo de regressão linear.
+Na próxima seção nos ocuparemos em limpar os dados, sobretudo para remover colunas que não fazem sentido e tornar tudo mais claro para a etapa de análise exploratória de dados e posterior desenvolvimento dos modelos de regressão linear.
 
 {{< pagebreak >}}
 
@@ -121,11 +119,11 @@ Na próxima seção nos ocuparemos em limpar os dados, sobretudo para remover co
 df_bike_new <- subset(df_bike, select = -c(casual, registered, instant))
 ```
 
-Em primeiro lugar, removemos as colunas casual e registered, vez que tal condição fora imposta pela professora no guião do projeto. Desta feita, excluímos as colunas ora mencionadas pois não serão objeto deste estudo.
+Em primeiro lugar, removemos as colunas casual e registered, vez que tal condição fora mencionada como obrigatória no guião do projeto. Desta feita, excluímos as colunas ora mencionadas pois não serão objeto deste estudo.
 
 Em seguida, é digno de atenção que cada linha do dataframe em questão diz respeito a um dia do ano, indo desde 01-01-2011 a 31-12-2012. Ademais, a variável 'instant' servia como indíce.
 
-Logo, com vistas a melhorar organizar o data set e diminuir o tempo de processamento para tarefas de regressão, decidimos por excluir a coluna 'instant' e utilizar a coluna 'dteday' como índice.
+Logo, com vistas a melhor organizar o data set e diminuir o tempo de processamento para tarefas de regressão, decidimos por excluir a coluna 'instant' e utilizar a coluna 'dteday' como índice.
 
 Assim está a nova configuração dos dados:
 
@@ -169,7 +167,9 @@ gridExtra::grid.arrange(gn3,gn4, ncol=2)
 
 Conforme depreende-se da análise dos boxplots, as variáveis 'hum' e 'windspeed' apresentaram outliers em sua composição. Para lidar com este problema, haja vista serem poucos os valores classificados como outliers, excluiremos tais valores discrepantes do data set df_bike_new.
 
-A exclusão dos outliers será feita por meio do IQR Score. O IQR (Intervalo Interquartil) é uma medida de dispersão que indica a amplitude dos dados em torno da mediana. O IQR score é uma medida estatística usada para identificar outliers, calculada como a diferença entre o terceiro quartil (Q3) e o primeiro quartil (Q1). Outliers geralmente são definidos como valores que caem abaixo de Q1 - 1,5 \* IQR ou acima de Q3 + 1,5 \* IQR.
+#### Exclusão dos outliers por meio da definição dos limites superiores e inferiores pelo IQR SCORE:
+
+A exclusão dos outliers será feita por meio do IQR Score. O IQR (Intervalo Interquartil) é uma medida de dispersão que indica a amplitude dos dados em torno da mediana. O IQR score é uma medida estatística usada para identificar outliers, calculada como a diferença entre o terceiro quartil (Q3) e o primeiro quartil (Q1). Outliers geralmente são definidos como valores que caem abaixo de Q1 - 1,5 \* IQR (Limite inferior) ou acima de Q3 + 1,5 \* IQR (Limite superior).
 
 ```{r}
 # Calcular os limites superior e inferior para definir outliers (usando o método IQR)
@@ -205,7 +205,7 @@ Ao implementar as etapas de limpeza anteriores, criamos um conjunto de dados mai
 
 Prosseguindo, nosso foco irá mudar para a Análise Exploratória de Dados (AED) para obter insights mais profundos sobre os dados de compartilhamento de bicicletas e identificar padrões acionáveis. Esta fase analítica tem como objetivo descobrir tendências significativas, correlações e padrões dentro do conjunto de dados.
 
-A primeira medida será categorizar as variáveis categóricas, utilizando para tanto a funcão factor do R.
+A primeira medida será tranformar em fator as variáveis categóricas, utilizando para tanto a função factor do R.
 
 ```{r}
 
@@ -261,7 +261,7 @@ ggplot(df_clean, aes(x = windspeed)) +
 
 ```
 
--   Quanto à variável relativa à umidade relativa, a distribuição aproxima-se da normalidade.
+-   Quanto à variável que diz respeito à umidade relativa, a distribuição aproxima-se da normalidade.
 
 -   O mesmo ocorre à variável preditora "temperatura".
 
@@ -274,7 +274,7 @@ ggplot(df_clean, aes(x = windspeed)) +
 ```{r, fig.align='center'}
 ggplot(df_clean, aes(x = season, y = cnt)) +
   geom_bar(stat = "identity", fill="#FF9999") +
-  labs(title = "Núm. de bikes alugadas por estação do ano", x = "Seasons", y = "cnt") + 
+  labs(title = "Núm. de bikes alugadas X estação do ano", x = "Seasons", y = "cnt") + 
   theme(panel.background = element_rect("white")) +
   theme(plot.title = element_text(face = "bold")) +
   scale_y_continuous(labels = scales::number_format(scale = 1e-3, suffix = "k"))
@@ -287,7 +287,7 @@ Aqui podemos perceber que há uma clara tendência pela maior procura de aluguel
 ```{r, fig.align='center'}
 ggplot(df_clean, aes(x = yr, y = cnt)) +
   geom_bar(stat = "identity", fill="#FF9999") +
-  labs(title = "Número de bikes alugadas por ano", x = "Year", y = "cnt") + 
+  labs(title = "Núm. de bikes alugadas X ano", x = "Year", y = "cnt") + 
   theme(panel.background = element_rect("white")) +
   theme(plot.title = element_text(face = "bold")) +
   scale_y_continuous(labels = scales::number_format(scale = 1e-3, suffix = "k"))
@@ -296,14 +296,14 @@ ggplot(df_clean, aes(x = yr, y = cnt)) +
 
 Conforme depreende-se da análise do gráfico, houve um aumento substancial no número de bicicletas no ano de 2012, se comparado ao ano anterior.
 
-Isto pode significar uma tendência de crescimento para este mercado. Para confirmar tal asuncão seria necessário ter os dados dos anos posteriores e proceder à análise de série temporal para saber se a tendência se confirma.
+Isto pode significar uma tendência de crescimento para este mercado. Para confirmar tal asuncão seria necessário ter os dados dos anos posteriores e proceder à análise de séries temporais para saber se a tendência se confirma.
 
 ### E em relação aos meses?
 
 ```{r, fig.align='center'}
 ggplot(df_clean, aes(x = mnth, y = cnt)) +
   geom_bar(stat = "identity", fill="#FF9999") +
-  labs(title = "Número de bikes alugadas por mês", x = "Month", y = "cnt") + 
+  labs(title = "Núm. de bikes alugadas X mês", x = "Month", y = "cnt") + 
   theme(panel.background = element_rect("white")) +
   theme(plot.title = element_text(face = "bold")) +
   scale_y_continuous(labels = scales::number_format(scale = 1e-3, suffix = "k"))
@@ -319,13 +319,13 @@ Aqui a tendência se confirma, demonstrando que nos meses mais quentes há um au
 ```{r, fig.align='center'}
 ggplot(df_clean, aes(x = weekday, y = cnt)) +
   geom_bar(stat = "identity", fill="#FF9999") +
-  labs(title = "Número de bikes alugadas por dia da semana", x = "Dia da Semana", y = "cnt") + 
+  labs(title = "Núm. de bikes alugadas X dia da semana", x = "Dia da Semana", y = "cnt") + 
   theme(panel.background = element_rect("white")) +
   theme(plot.title = element_text(face = "bold")) +
   scale_y_continuous(labels = scales::number_format(scale = 1e-3, suffix = "k"))
 ```
 
-Em relação ao dia da semana, a análise do gráfico nos mostra que há quase um equilíbrio na distribuição ao longo dos dias, com uma tendência um pouco menor de aluguéis aos domingos e segundas-feiras, bem como uma leve tendência de maior número de alugueis aos sábados.
+Em relação ao dia da semana, a análise do gráfico nos mostra que há quase um equilíbrio na distribuição ao longo dos dias, com uma tendência um pouco menor de aluguéis aos domingos e segundas-feiras, bem como uma leve tendência a um maior número de alugueis aos sábados.
 
 Desta feita, caso a empresa queira aumentar o número de alugueis no domingo/segunda-feira com vistas a igualar os demais dias da semana, pode ser interessante endereçar campanhas de marketing com descontos ou programas de fidelidade destinados a estes dias em específico.
 
@@ -334,7 +334,7 @@ Desta feita, caso a empresa queira aumentar o número de alugueis no domingo/seg
 ```{r, fig.align='center'}
 ggplot(df_clean, aes(x = weathersit, y = cnt)) +
   geom_bar(stat = "identity", fill="#FF9999") +
-  labs(title = "Número de bikes alugadas por condição climática", x = "Condição Climática", y = "cnt") + 
+  labs(title = "Núm. de bikes alugadas X condição climática", x = "Condição Climática", y = "cnt") + 
   theme(panel.background = element_rect("white")) +
   theme(plot.title = element_text(face = "bold")) +
   scale_y_continuous(labels = scales::number_format(scale = 1e-3, suffix = "k"))
@@ -347,7 +347,7 @@ Em seguida sob as condições "Nevoeiro + Nublado, Nevoeiro + Nuvens quebradas, 
 
 É importante termos atenção à variável independente 'weathersit' pois pode ser que ela contribua sobremaneira para explicar as variações em 'cnt'.
 
-## Desenvolvimento do Modelo De Regressão Linear Múltipla:
+# Desenvolvimento do Modelo De Regressão Linear Múltipla:
 
 A regressão linear múltipla é uma técnica estatística que busca modelar a relação entre uma variável dependente, que é aquela que queremos prever, e duas ou mais variáveis independentes. Ela é uma extensão da regressão linear simples, que envolve apenas uma variável independente. Na regressão linear múltipla, o objetivo é estimar os coeficientes das variáveis independentes para prever ou explicar a variabilidade na variável dependente.
 
@@ -404,7 +404,7 @@ ggplot(correlation_df, aes(x = Var1, y = Var2, fill = Correlation)) +
   labs(x = NULL, y = NULL, title = "Matriz de Correlação")
 ```
 
-Salta aos olhos a forte correlação linear entre as variáveis temp e atemp. Ora, sendo temp a temperatura real medida naquela data e atemp a sensação térmica, fica fácil preceber a razão desta correlação linear positiva tão forte.
+Salta aos olhos a forte correlação linear entre as variáveis temp e atemp. Ora, sendo temp a temperatura real medida naquela data e atemp a sensação térmica, fica fácil perceber a razão desta correlação linear positiva tão forte.
 
 Assim sendo, com vistas a evitar a violação do pressuposto da não existência de multicolinearidade entre as variáveis independentes no modelo de regressão linear, excluíremos da nossa análise a variável "atemp", mantendo apenas "temp" no modelo.
 
@@ -414,7 +414,7 @@ Quanto às variáveis categóricas, que constituem uma importante parte das vari
 
 3)  Homocedasticidade das variâncias dos erros. Partiremos do princípio que este pressuposto está satisfeito para os dados em questão.
 
-### Desenvolvendo e avaliando o Modelo 1 de Regressão Linear Múltipla:
+### **Desenvolvendo e avaliando o Modelo 1 de Regressão Linear Múltipla:**
 
 Desenvolveremos a seguir um modelo de regressão Linear Múltipla saturado com todas as variáveis independentes que temos à disposição, à exceção de "atemp" que foi eliminada na etapa anterior.
 
@@ -520,16 +520,16 @@ abline(lm(cnt ~ predicted, data = test_data), col = "red")
 
 Ao analisar os resultados do treino do nosso modelo, sob a ótica da contribuição das variáveis independentes na explicação da variável-alvo, devemos considerar o teste T associado a elas e o p-value associado, sendo estas as hipóteses:
 
-$H_0: \beta_1 = 0$
+  $H_0: \beta_1 = 0$
 
-$H_1: \beta_1 \neq 0$
+  $H_1: \beta_1 \neq 0$
 
 tendo em consideração o nível de significância definido neste trabalho ($\alpha$ = 0.05), consideraremos como significativas para o modelo (ou seja, rejeita-se a hipótese nula apenas para) as seguintes variáveis independentes:
 
-| Variável    | Estimate  | Std. Error | t value | Pr(\>    | t                   |
+| Variável    | Estimate  | Std. Error | t value | Pr(\>)   | Significância       |
 |-------------|-----------|------------|---------|----------|---------------------|
-| weathersit3 | -2040.012 | 232.645    | -8.769  | \< 2e-16 | Muito significativo |
-| temp        | 4466.890  | 462.041    | 9.668   | \< 2e-16 | Muito significativo |
+| weathersit3 | -2040.012 | 232.645    | -8.769  | < 2e-16  | Muito significativo |
+| temp        | 4466.890  | 462.041    | 9.668   | < 2e-16  | Muito significativo |
 | season4     | 1545.817  | 204.540    | 7.558   | 1.74e-13 | Muito significativo |
 | yr1         | 3957.887  | 1294.695   | 3.057   | 0.002345 | Muito significativo |
 | windspeed   | -2876.164 | 473.284    | -6.077  | 2.30e-09 | Muito significativo |
@@ -555,7 +555,7 @@ tendo em consideração o nível de significância definido neste trabalho ($\al
 
 Aquelas que consideramos como pouco ou não significativas de acordo com o resultado do teste T associado são:
 
-| Variável    | Estimate | Std. Error | t value | Pr(\>    | t                 |
+| Variável    | Estimate | Std. Error | t value | Pr(\>)   | Significância     |
 |-------------|----------|------------|---------|----------|-------------------|
 | dteday      | -5.451   | 3.537      | -1.541  | 0.123799 | Não significativo |
 | workingday1 | NA       | NA         | NA      | NA       | NA                |
@@ -594,7 +594,7 @@ Entretanto, um outro problema ainda mais grave foi diagnisticado: Ao tentar util
 
 Este erro indica que pode existir multicolinearidade entre as variáveis preditoras do modelo. Ora, sendo a não existência de multicolinearidade entre as variáveis preditoras um dos principais pressupostos para a assunção de que um modelo de regressão linear é bom e confiável, resta-nos a opção de investigar se está a ocorrer multicolinearidade e excluir as variáveis problemáticas.
 
-## Modelo 2 - Novo modelo com menos variáveis
+### **Modelo 2 - Novo modelo com menos variáveis**
 
 Neste momento nos dedicaremos à melhora do modelo anterior, retirando inicialmente as variáveis "dteday" e "workingday", baseados em sua não contribuição e significância e analisaremos o VIF para este caso.
 
@@ -622,7 +622,7 @@ Chama atenção ainda que a variável "temp" apresente um VIF muito próximo do 
 
 Desta feita, desenvolveremos um novo modelo, desta vez sem a variável "mnth", haja vista ter apresentado níveis de significância para o modelo mais modestos que a variável "season".
 
-## Modelo 3: Excluindo "mnth" do conjunto de variáveis independentes:
+### **Modelo 3: Excluindo "mnth" do conjunto de variáveis independentes:**
 
 ```{r, fig.align='center'}
 # Ajustar o modelo removendo algumas variáveis independentes
@@ -639,8 +639,8 @@ vif(lm.fit_new2)
 Ao avaliarmos a performance do modelo, agora sem a presença das variáveis independentes "workingday", "dteday" e "mnth", bem como o valor do VIF associado às variáveis independentes restantes, podemos concluir que:
 
 1)  **Trata-se de um modelo globalmente significativo** e ao menos uma variável independente é significativa para explicar a variável dependente "cnt".
+Tal assunção é corroborada pelo valor de F-statistic, o qual encontra-se distante de 1      (F-Statistic = 180.1), tendo ainda o p-value associado a este teste um valor \< $\alpha$    (p-value: \< 2.2e-16)
 
-Tal assunção é corroborada pelo valor de F-statistic, o qual encontra-se distante de 1 (F-Statistic = 180.1), tendo ainda o p-value associado a este teste um valor \< $\alpha$ (p-value: \< 2.2e-16)
 
 2)  O pressuposto da não existência de multicolinearidade entre as variáveis independentes não foi violado. **Portanto, não há multicolinearidade no modelo em questão.**
 
@@ -696,7 +696,7 @@ abline(lm(cnt ~ predicted2, data = test_data), col = "red")
 
 O gráfico em questão confirma a assunção de que o modelo 3, o qual não conta com as variáveis preditoras "workingday", "dteday" e "mnth", é adequado para prever o número de bicicletas que serão alugadas, utilizand-se para tanto do conjunto de variáveis independentes restantes no conjunto de dados bike sharing, as quais são significativas para o contexto do nosso modelo.
 
-## Conclusão
+# Conclusão
 
 Concluímos o presente projeto com a assunção de que o último modelo desenvolvido (modelo 3) foi o que mais se aproximou daquilo que consideramos ideal para prever novos valores para o número de alugueis de bicicletas, dadas as mesmas informações constantes ao data set bike sharing.
 
@@ -706,7 +706,9 @@ Desta feita, como próximas etapas do presente projeto poderíamos citar a aplic
 
 Por fim, após a escolha do melhor modelo baseado em critérios objetivos seria possível construir a etapa de deploy para colocá-lo em produção em benefício da organização.
 
+**O código fonte em R do presente trabalho consta ao link do reposiório a seguir:  [Repositório GitHub](https://github.com/mello-pedro/SUPERV_ML_MCDE_23_24/blob/main/R_SOURCE_CODE_BIKE_SHARING.qmd).**
+
 ```{r include = FALSE}
-#rm(list = ls())
-#gc()
+rm(list = ls())
+gc()
 ```
