@@ -316,8 +316,6 @@ remover colunas que não fazem sentido e tornar tudo mais claro para a
 etapa de análise exploratória de dados e posterior desenvolvimento dos
 modelos de regressão linear.
 
-\newpage{}
-
 \subsection{Limpeza dos dados:}\label{limpeza-dos-dados}
 
 Em primeiro lugar, removemos as colunas casual e registered, vez que tal
@@ -462,10 +460,10 @@ utilizando para tanto a função factor do R.
   Quanto à variável que diz respeito à umidade relativa, a distribuição
   aproxima-se da normalidade.
 \item
-  O mesmo ocorre à variável preditora ``temperatura''.
-\item
-  Já em relação à análise da distribuição da variável ``sensação
-  térmica'' podemos enxergar uma assimetria negativa.
+  Já em relação à distribuição das variáveis ``sensação térmica'' e
+  ``temperatura'', podemos dizer que a análise dos gráficos de
+  distribuição nos leva a concluir que pode existir uma distribuição
+  bimodal em amos os casos.
 \item
   A variável relativa à velocidade do vento, por sua vez, traz uma
   assimetria positiva em sua distribuição.
@@ -524,6 +522,8 @@ semana:}\label{explorando-a-relauxe7uxe3o-entre-o-nuxfamero-de-bikes-alugadas-e-
 \includegraphics{R_SOURCE_CODE_BIKE_SHARING_files/figure-pdf/unnamed-chunk-15-1.pdf}
 \end{center}
 
+\newpage{}
+
 Em relação ao dia da semana, a análise do gráfico nos mostra que há
 quase um equilíbrio na distribuição ao longo dos dias, com uma tendência
 um pouco menor de aluguéis aos domingos e segundas-feiras, bem como uma
@@ -554,7 +554,7 @@ pode ser que ela contribua sobremaneira para explicar as variações em
 `cnt'.
 
 \section{Desenvolvimento do Modelo De Regressão Linear
-Múltipla:}\label{desenvolvimento-do-modelo-de-regressuxe3o-linear-muxfaltipla}
+Múltipla}\label{desenvolvimento-do-modelo-de-regressuxe3o-linear-muxfaltipla}
 
 A regressão linear múltipla é uma técnica estatística que busca modelar
 a relação entre uma variável dependente, que é aquela que queremos
@@ -892,8 +892,6 @@ weekday5 & 515.156 & 117.820 & 4.372 & 1.47e-05 & Muito significativo \\
 weekday1 & 254.329 & 122.514 & 2.076 & 0.038369 & significativo \\
 season2 & 889.497 & 208.418 & 4.268 & 2.33e-05 & Muito significativo \\
 season3 & 800.525 & 243.107 & 3.293 & 0.001056 & Muito significativo \\
-(Intercept) & 83356.785 & 52998.883 & 1.573 & 0.116343 & Não
-significativo \\
 weekday2 & 380.692 & 116.303 & 3.273 & 0.001130 & Muito significativo \\
 weekday3 & 472.973 & 115.479 & 4.096 & 4.84e-05 & Muito significativo \\
 weekday4 & 376.212 & 117.433 & 3.204 & 0.001436 & Muito significativo \\
@@ -909,7 +907,7 @@ hum & -1673.201 & 337.446 & -4.958 & 9.50e-07 & Muito significativo \\
 \end{longtable}
 
 Aquelas que consideramos como pouco ou não significativas de acordo com
-o resultado do teste T associado são:
+o resultado do teste T associado são (incluindo-se o intercepto):
 
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1781}}
@@ -936,6 +934,8 @@ Significância
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
+(Intercept) & 83356.785 & 52998.883 & 1.573 & 0.116343 & Não
+significativo \\
 dteday & -5.451 & 3.537 & -1.541 & 0.123799 & Não significativo \\
 workingday1 & NA & NA & NA & NA & NA \\
 mnth2 & 320.500 & 184.566 & 1.737 & 0.083038 & Não significativo \\
@@ -1058,10 +1058,10 @@ um Adjusted R-squared = 0.8489, ou seja, pouquíssimo inferior ao seu
 antecessor e com um valor de F-statistic = 120.7, corroborado pelo
 p-value \textless{} \(\alpha\).
 
-Aqui o intercepto já passa a ser estatisticamente significativo para o
-modelo, ao contrário do que ocorrera anteriormente e a variável
-``mnth''(representada pelas variáveis dummy) continua parece ter pouca
-significância para explicar a variável resposta ``cnt''.
+Aqui o intercepto já passa a ser significativo para o modelo, ao
+contrário do que ocorrera anteriormente e a variável
+``mnth''(representada pelas variáveis dummy) parece seu pouco
+significtiva para explicar a variável resposta ``cnt''.
 
 Entretanto, vejamos o VIF associado ao novo modelo:
 
@@ -1090,7 +1090,8 @@ descartaremos.
 
 Desta feita, desenvolveremos um novo modelo, desta vez sem a variável
 ``mnth'', haja vista ter apresentado níveis de significância para o
-modelo mais modestos que a variável ``season''.
+modelo mais modestos que a variável ``season'', bem como o maior VIF se
+comparada às demais.
 
 \subsubsection{\texorpdfstring{\textbf{Modelo 3: Excluindo ``mnth'' do
 conjunto de variáveis
@@ -1224,13 +1225,139 @@ utilizand-se para tanto do conjunto de variáveis independentes restantes
 no conjunto de dados bike sharing, as quais são significativas para o
 contexto do nosso modelo.
 
+\subsection{Extra - Avaliação da performance de uma árvore de decisão
+para a mesma tarefa de
+Regressão.}\label{extra---avaliauxe7uxe3o-da-performance-de-uma-uxe1rvore-de-decisuxe3o-para-a-mesma-tarefa-de-regressuxe3o.}
+
+Após desenvolver e analisar a performance de 3 modelos de Regressão
+Linear Múltipla para a tarefa de previsão do número total de bicicletas
+alugadas/dia em função de uma série de variáveis independentes,
+testaremos como será a performance de uma árvore de decisão para o mesmo
+conjunto de dados.
+
+\begin{verbatim}
+[1] 216  13
+\end{verbatim}
+
+Conforme observamos acima, 216 observações do nosso dataframe foram
+separadas para Teste do modelo de árvore de decisão. As observaçòes
+restantes constituem o conjunto de Treino do modelo.
+
+\begin{figure}[H]
+
+{\centering \includegraphics{R_SOURCE_CODE_BIKE_SHARING_files/figure-pdf/unnamed-chunk-32-1.pdf}
+
+}
+
+\caption{Árvore com 8 Nós-Folha}
+
+\end{figure}%
+
+\begin{verbatim}
+
+Regression tree:
+tree(formula = cnt ~ ., data = df_limpo, subset = traint.df)
+Variables actually used in tree construction:
+[1] "temp"   "season" "yr"     "atemp"  "hum"   
+Number of terminal nodes:  8 
+Residual mean deviance:  737800 = 363700000 / 493 
+Distribution of residuals:
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+-5120.0  -438.2   117.3     0.0   524.5  2140.0 
+\end{verbatim}
+
+Ao treinarmos o modelo aplicando-o ao data set de treino, obtivemos como
+output automático do R uma árvore de decisão com 8 nós-folha.
+
+Isto está diretamente ligado à complexidade do modelo. Sendo assim,
+quanto maior o número de nós folha, mais complexo se torna o modelo, o
+que pode levá-lo ao sobreajuste.
+
+É salutar ressaltar que o R utilizou como variáveis independentes apenas
+o conjunto ``temp'', ``season'', ``yr'', ``atemp'' e ``hum''.
+
+Vejamos a capacidade de realizar previsões do nosos modelo e a distância
+entre o observado e aquilo que foi predito para os dados de teste:
+
+\includegraphics{R_SOURCE_CODE_BIKE_SHARING_files/figure-pdf/unnamed-chunk-33-1.pdf}
+
+O RMSE (Root Mean Square Error) é uma medida que quantifica a média das
+diferenças entre os valores previstos por um modelo e os valores reais
+de uma variável de interesse. É comumente usado para avaliar a precisão
+de modelos de previsão, como modelos de regressão, \textbf{onde valores
+menores indicam uma melhor capacidade de previsão do modelo.}
+
+Com vistas a melhorar a capacidade preditiva do modelo, utilizaremos o
+mecanismo da validação cruzada para tentar encontrar o número ideal de
+nós-folha para o nosso modelo de árvore de decisão para regressão.
+
+Para a primeira árvore com 8 nós-folha, alcançamos um RMSE de 1005.35.
+
+\subsection{Aplicação da validação cruzada e avaliação dos
+resultados:}\label{aplicauxe7uxe3o-da-validauxe7uxe3o-cruzada-e-avaliauxe7uxe3o-dos-resultados}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{R_SOURCE_CODE_BIKE_SHARING_files/figure-pdf/unnamed-chunk-34-1.pdf}
+
+}
+
+\caption{Erro de Validação Cruzada vs.~Tamanho da Árvore}
+
+\end{figure}%
+
+Mesmo que a validação cruzada não aponte uma grande diferença de RMSE da
+árvore com 6 ou 8 nós, é importante que façamos o treinamento do modelo
+com 6 nós-folha com o objetivo de diminuir a complexidade do modelo e
+saber qual será o tamanho da perda, em termos de precisão, uma vez que a
+depender deste resultado pode ser mais vantajoso utilizar o modelo com
+menos nós.
+
+Um nó folha (nó terminal) é o ponto final onde uma decisão ou
+classificação é feita. Ele não possui ramificações adicionais,
+representando uma conclusão ou resultado final baseado nos atributos e
+critérios analisados ao longo do caminho na árvore de decisão.
+
+\textbf{Desta feita, após a avaliacão dos resultados, treinaremos uma
+nova árvore de decisão, desta vez com 6 nós-folha e avaliaremos a
+performance das suas previsões por meio da comparação do valor da raíz
+quadrada do erro médio(RMSE):}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{R_SOURCE_CODE_BIKE_SHARING_files/figure-pdf/unnamed-chunk-35-1.pdf}
+
+}
+
+\caption{Nova árvore com apenas 6 Nós-Folha}
+
+\end{figure}%
+
+\begin{verbatim}
+[1] "RMSE da árvore com 6 Nós-Folha: 1033.20818180359"
+\end{verbatim}
+
+Como é possível perceber, a diminuição da complexidade da árvore por
+meio da poda, levou o modelo a uma perda significativa de RMSE, tendo
+este resultado em 1033.20, frente aos 1005.35 da árvore com 8 nós.
+
+Para diminuir a complexidade da árvore, o R eliminou duas variáveis
+independentes deste último modelo, sendo elas ``atemp'' e ``hum'', o que
+pode ter levado ainda ao aumento do RMSE.
+
+Haja vista que o desenvolvimento da árvore de decisão apresenta-se neste
+estudo como um ``extra'', sendo o seu principal objeto as regressões
+lineares múltiplas, utilizaríamos a primeira árvore de decisão se
+quisessemos realizar previsões por meio deste tipo de modelo (decision
+trees) e não a última, com apenas 6 nós-folha.
+
 \section{Conclusão}\label{conclusuxe3o}
 
-Concluímos o presente projeto com a assunção de que o último modelo
-desenvolvido (modelo 3) foi o que mais se aproximou daquilo que
-consideramos ideal para prever novos valores para o número de alugueis
-de bicicletas, dadas as mesmas informações constantes ao data set bike
-sharing.
+Concluímos o presente projeto com a assunção de que o último modelo de
+regressão linear múltipla desenvolvido (modelo 3) foi o que mais se
+aproximou daquilo que consideramos ideal para prever novos valores para
+o número de alugueis de bicicletas, dadas as mesmas informações
+constantes ao data set bike sharing.
 
 Desenvolvemos e construímos o modelo tendo por base as etapas iniciais
 de limpeza e exploração dos dados, passando posteriormente pela
@@ -1241,15 +1368,23 @@ que melhor generaliza sobre os dados e os padrões relacionados, tendo
 como benchmark para comparação de modelos o coeficiente de determinação
 ajustado.
 
+Em seguida, como uma etapa extra, desenvolvemos duas árvores de decisão
+com vistas a efetuar a mesma tarefa de regressão para a variável
+dependente CNT do nosos conjunto de dados, senod uma com 8 nós-folha (a
+qual seria escolhida caso fossemos optar neste estudo por modleos de
+árvore de decisão) e outra com apenas 6 nós-folha.
+
 Desta feita, como próximas etapas do presente projeto poderíamos citar a
-aplicação e desenvolvimento de novos modelos para o mesmo conjunto de
-dados, como por exemplo as árvores de decisão para saber qual seria a
-acurácia e eficácia e comparar com aquilo que foi entregue pela
-Regressão Linear Múltipla.
+aplicação e desenvolvimento de novos modelos em árvore para o mesmo
+conjunto de dados, como por exemplo Random Forest ou XGboost, com vistas
+a compará-los a tudo o que fora desenvolvido neste estudo e buscar
+aquele que melhor se adeque aos dados, sem contudo perder a capacidade
+de generalizar e prever sobre novos dados de teste e/ou validação..
 
 Por fim, após a escolha do melhor modelo baseado em critérios objetivos
 seria possível construir a etapa de deploy para colocá-lo em produção em
-benefício da organização.
+benefício da organização, ao utilizar para tanto ferramentas cloud e
+esteiras de CI/CD.
 
 \textbf{O código fonte em R do presente trabalho consta ao link do
 reposiório a seguir:
