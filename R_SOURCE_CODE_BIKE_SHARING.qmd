@@ -38,7 +38,7 @@ Além disso, é importante destacar que este trabalho será fundamentado na aná
 
 O principal objetivo deste trabalho é desenvolver um modelo de regressão linear múltipla que seja capaz de prever o número de aluguéis de bicicleta por dia com base nas variáveis ambientais e sazonais fornecidas no conjunto de dados. Pretende-se entender a relação de fatores como estação do ano, condições meteorológicas, feriados e dia da semana com a demanda por aluguéis de bicicleta.
 
-Assim sendo, a variável que queremos prever é a "cnt" (contagem total de bicicletas alugadas, incluindo tanto as casuais quanto as registradas), que neste estudo será chamada de variável dependente e por vezes também pode assumir as nomenclaturas de variável resposta ou variável-alvo (target) e que pode ser compreendida como "a contagem total de bicicletas alugadas por dia, incluindo utilizadores casuais e registados";
+Assim sendo, a variável que queremos prever é a "cnt" (contagem total de bicicletas alugadas, incluindo tanto as casuais quanto as registradas), que neste estudo será chamada de variável dependente e por vezes também pode assumir as nomenclaturas de variável resposta ou variável-alvo (target) e que pode ser compreendida como "a contagem total de bicicletas alugadas por dia, incluindo utilizadores casuais e registados".
 
 ## Apresentação do conjunto de dados e identificação das variáveis dependente e independentes:
 
@@ -91,7 +91,7 @@ df_bike %>%
 
 ### Metadados do data set objeto do presente estudo:
 
-Usando a função "introduce" do pacote DataExplorer, teremos um inmportante panorama geral sobre o conjunto de dados bike sharing:
+Usando a função "introduce" do pacote DataExplorer, teremos um importante panorama geral sobre o conjunto de dados bike sharing:
 
 ```{r}
 introduce(df_bike) %>%
@@ -134,12 +134,12 @@ introduce(df_bike_new) %>%
 
 #### Busca por outliers:
 
-Agora que já excluímos da análise as colunas desnecessárias e checamos a não existência de valores nulos, é importante atentarmo-nos para a existência de outliers, que são valores que se afastam significativamente da maioria dos outros valores num conjunto de dados. Eles podem distorcer análises estatísticas e modelos, influenciando os resultados.
+Agora que já excluímos da análise as colunas desnecessárias e verificamos a não existência de valores nulos, é importante atentarmo-nos para a existência de outliers, que são valores que se afastam significativamente da maioria dos outros valores num conjunto de dados. Eles podem distorcer análises estatísticas e modelos, influenciando os resultados.
 
 Além disso, uma das maiores desvantagens da utilização de modelos de regressão linear é a sua alta sensibilidade a outliers. Isto posto, identificar e lidar com outliers é de suma importância para garantir a precisão do modelo a ser desenvolvido.
 
 ```{r, fig.align='center', fig.cap = "Distribuições com Outliers"}
-## Transformar em fatores as variaveis numericas e categoricas
+##transformar em fatores as variaveis numericas e categoricas
 num_var = c('temp', 'atemp', 'hum', 'windspeed', 'cnt')
 categ_var = c('season', 'yr', 'mnth', 'holiday', 'weekday', 'workingday', 'weathersit')
 
@@ -156,8 +156,6 @@ for (i in 1:length(num_var))
 }
 
 
-
-## Plotting plots together
 gridExtra::grid.arrange(gn1,gn2,ncol=2)
 gridExtra::grid.arrange(gn3,gn4, ncol=2)
 
@@ -177,23 +175,23 @@ windspeed_upper <- quantile(df_bike_new$windspeed, 0.75) + 1.5 * IQR(df_bike_new
 hum_lower <- quantile(df_bike_new$hum, 0.25) - 1.5 * IQR(df_bike_new$hum)
 hum_upper <- quantile(df_bike_new$hum, 0.75) + 1.5 * IQR(df_bike_new$hum)
 
-# Filtrar linhas com windspeed e hum dentro dos limites definidos
+#filtrar linhas com windspeed e hum dentro dos limites definidos
 df_bike_new <- df_bike_new[df_bike_new$windspeed >= windspeed_lower & df_bike_new$windspeed <= windspeed_upper &
                                     df_bike_new$hum >= hum_lower & df_bike_new$hum <= hum_upper, ]
 
-## Excluir valores duplicados, se houver
+#Excluir valores duplicados, se houver
 
 df_bike_new <- df_bike_new %>% distinct()
 ```
 
 Após realizarmos a exclusão dos outliers, apenas 18 observações foram apagadas do conjunto de dados. Apesar de ser interessante contar com o máximo de dados possíveis, é ainda mais importante para o nosso modelo a não existência de outliers.
 
-Utlizamos também o parâmetro distinct do R para eliminar duplicatas do nosso conjunto de dados. Entretanto, nenhuma duplicata foi identificada.
+Utilizamos também o parâmetro distinct do R para eliminar duplicatas do nosso conjunto de dados. Entretanto, nenhuma duplicata foi identificada.
 
 Após a finalização da limpeza dos dados, vamos salvá-los em um novo ficheiro o qual chamaremos de "df_clean" e que será utilizado de agora em diante na análise exploratória e modelagem.
 
 ```{r}
-# Salvar os dados limpos em um novo ficheiro csv
+#Salvar os dados limpos em um novo ficheiro csv
 write.csv(df_bike_new, "df_clean.csv", row.names = FALSE)
 ```
 
@@ -261,7 +259,7 @@ ggplot(df_clean, aes(x = windspeed)) +
 
 -   Quanto à variável que diz respeito à umidade relativa, a distribuição aproxima-se da normalidade.
 
--   Já em relação à distribuição das variáveis "sensação térmica" e "temperatura", podemos dizer que a análise dos gráficos de distribuição nos leva a concluir que pode existir uma distribuição bimodal em amos os casos.
+-   Já em relação à distribuição das variáveis "sensação térmica" e "temperatura", podemos dizer que a análise dos gráficos de distribuição nos leva a concluir que pode existir uma distribuição bimodal em ambos os casos.
 
 -   A variável relativa à velocidade do vento, por sua vez, traz uma assimetria positiva em sua distribuição.
 
@@ -385,11 +383,11 @@ numeric_df <- df_clean[, numeric_vars]
 # Calcular a matriz de correlação
 correlation_matrix <- cor(numeric_df, method = "pearson")
 
-# Converter a matriz de correlação em um data frame
+#converter em  data frame
 correlation_df <- as.data.frame(as.table(correlation_matrix))
 names(correlation_df) <- c("Var1", "Var2", "Correlation")
 
-# Plotar a matriz de correlação como um heatmap
+#Plot da matriz de correlação como um heatmap
 ggplot(correlation_df, aes(x = Var1, y = Var2, fill = Correlation)) +
   geom_tile() +
   scale_fill_gradient2(low = "blue", mid = "white", high = "red", 
@@ -420,7 +418,7 @@ O objetivo aqui é avaliar a acurácia do modelo, sobretudo no que diz respeito 
 Ressaltamos que todas as análises realizadas a partir deste momento terão em consideração um nível de significância $\alpha = 0.05$.
 
 ```{r,fig.align='center'}
-set.seed(110)  # semente para reprodutibilidade dos resultados
+set.seed(110)  
 df_reg_lin <- read.csv("df_clean.csv", row.names = NULL)
 df_reg_lin <- df_reg_lin[, !colnames(df_reg_lin) %in% c("atemp")]
 df_reg_lin$dteday <- as.Date(df_reg_lin$dteday)
@@ -807,15 +805,25 @@ Haja vista que o desenvolvimento da árvore de decisão apresenta-se neste estud
 
 # Conclusão
 
-Concluímos o presente projeto com a assunção de que o último modelo de regressão linear múltipla desenvolvido (modelo 3) foi o que mais se aproximou daquilo que consideramos ideal para prever novos valores para o número de alugueis de bicicletas, dadas as mesmas informações constantes ao data set bike sharing.
+Concluímos o presente projeto com a ideia de que o Modelo 3 de regressão linear múltipla
+representa a melhor abordagem para prever o número de aluguéis de bicicletas, considerando as informações disponíveis no data set de bike sharing. A nossa caminhada metodológica, desde a limpeza inicial dos dados até a meticulosa comparação dos modelos, foi fundamentada numa uma abordagem estruturada e detalhada.
 
-Desenvolvemos e construímos o modelo tendo por base as etapas iniciais de limpeza e exploração dos dados, passando posteriormente pela verificação dos pressupostos básicos para o desenvolvimento do modelo de regressào linear ,múltipla, divisão dos dados entre treino e teste e, por fim, a comparação de modelos até chegar àquele que consideramos o que melhor generaliza sobre os dados e os padrões relacionados, tendo como benchmark para comparação de modelos o coeficiente de determinação ajustado.
+Após a preparação dos dados, dedicamos uma fase crucial à seleção e validação dos pressupostos básicos necessários para o desenvolvimento do modelo regressão linear múltipla. Essa análise abrangente foi essencial para assegurar a validade das inferências e a robustez do modelo.
 
-Em seguida, como uma etapa extra, desenvolvemos duas árvores de decisão com vistas a efetuar a mesma tarefa de regressão para a variável dependente CNT do nosos conjunto de dados, senod uma com 8 nós-folha (a qual seria escolhida caso fossemos optar neste estudo por modleos de árvore de decisão) e outra com apenas 6 nós-folha.
+A divisão criteriosa dos dados em conjuntos de treino e teste foi realizada com o objetivo
+de garantir uma avaliação imparcial e rigorosa dos modelos propostos. Essa abordagem equitativa permitiu avaliar cada modelo sob condições justas, sem influência indevida dos
+dados.
 
-Desta feita, como próximas etapas do presente projeto poderíamos citar a aplicação e desenvolvimento de novos modelos em árvore para o mesmo conjunto de dados, como por exemplo Random Forest ou XGboost, com vistas a compará-los a tudo o que fora desenvolvido neste estudo e buscar aquele que melhor se adeque aos dados, sem contudo perder a capacidade de generalizar e prever sobre novos dados de teste e/ou validação..
+Para avaliar o desempenho dos modelos, escolhemos o coeficiente de determinação ajustado como nossa métrica principal. Essa escolha foi baseada na sua capacidade de fornecer uma avaliação abrangente e objetiva da capacidade de generalização e adequação dos modelos aos dados.
 
-Por fim, após a escolha do melhor modelo baseado em critérios objetivos seria possível construir a etapa de deploy para colocá-lo em produção em benefício da organização, ao utilizar para tanto ferramentas cloud e esteiras de CI/CD.
+Além da regressão linear múltipla, ampliamos a nossa análise desenvolvendo duas árvores de decisão como etapa adicional, sendo uma com 8 nós-folha (a qual seria escolhida caso fossemos optar neste estudo por modelos de árvore de decisão) e outra com apenas 6 nós-folha. Essa abordagem complementar enriqueceu a nossa compreensão sobre as melhores práticas para prever os aluguéis de bicicletas, ampliando os nossos insights.
+
+Olhando para o futuro, identificamos oportunidades empolgantes para aprimorar ainda mais nossa análise. A exploração e desenvolvimento de modelos baseados em árvores, como Random Forest ou XGBoost, representam próximos passos promissores. Esses modelos mais sofisticados têm o potencial de capturar nuances e padrões mais subtis nos dados, impulsionando a precisão e robustez das previsões.
+
+Após a seleção do modelo ideal, a próxima etapa do processo seria a fase de implantação,
+ao utilizar para tal ferramentas cloud e esteiras de CI/CD. Nessa etapa crucial, o modelo
+será integrado em um ambiente de produção, fornecendo insights valiosos para a tomada de decisões e o aprimoramento contínuo do sistema de compartilhamento de bicicletas.
+Esperamos que isso não apenas otimize a eficiência operacional, mas também melhore a experiência dos utilizadores e promova a sustentabilidade na comunidade.
 
 **O código fonte em R do presente trabalho consta ao link do reposiório a seguir:  [Repositório GitHub](https://github.com/mello-pedro/SUPERV_ML_MCDE_23_24/blob/main/R_SOURCE_CODE_BIKE_SHARING.qmd).**
 

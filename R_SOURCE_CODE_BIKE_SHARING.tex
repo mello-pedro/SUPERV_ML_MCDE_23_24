@@ -213,7 +213,7 @@ registradas), que neste estudo será chamada de variável dependente e por
 vezes também pode assumir as nomenclaturas de variável resposta ou
 variável-alvo (target) e que pode ser compreendida como ``a contagem
 total de bicicletas alugadas por dia, incluindo utilizadores casuais e
-registados'';
+registados''.
 
 \subsection{Apresentação do conjunto de dados e identificação das
 variáveis dependente e
@@ -278,7 +278,7 @@ instant & dteday & season & yr & mnth & holiday & weekday & workingday & weather
 estudo:}\label{metadados-do-data-set-objeto-do-presente-estudo}
 
 Usando a função ``introduce'' do pacote DataExplorer, teremos um
-inmportante panorama geral sobre o conjunto de dados bike sharing:
+importante panorama geral sobre o conjunto de dados bike sharing:
 
 \begin{table}[!h]
 \centering\begingroup\fontsize{8}{10}\selectfont
@@ -355,12 +355,12 @@ total\_observations & 9503\\
 
 \paragraph{Busca por outliers:}\label{busca-por-outliers}
 
-Agora que já excluímos da análise as colunas desnecessárias e checamos a
-não existência de valores nulos, é importante atentarmo-nos para a
-existência de outliers, que são valores que se afastam
-significativamente da maioria dos outros valores num conjunto de dados.
-Eles podem distorcer análises estatísticas e modelos, influenciando os
-resultados.
+Agora que já excluímos da análise as colunas desnecessárias e
+verificamos a não existência de valores nulos, é importante
+atentarmo-nos para a existência de outliers, que são valores que se
+afastam significativamente da maioria dos outros valores num conjunto de
+dados. Eles podem distorcer análises estatísticas e modelos,
+influenciando os resultados.
 
 Além disso, uma das maiores desvantagens da utilização de modelos de
 regressão linear é a sua alta sensibilidade a outliers. Isto posto,
@@ -410,7 +410,7 @@ apagadas do conjunto de dados. Apesar de ser interessante contar com o
 máximo de dados possíveis, é ainda mais importante para o nosso modelo a
 não existência de outliers.
 
-Utlizamos também o parâmetro distinct do R para eliminar duplicatas do
+Utilizamos também o parâmetro distinct do R para eliminar duplicatas do
 nosso conjunto de dados. Entretanto, nenhuma duplicata foi identificada.
 
 Após a finalização da limpeza dos dados, vamos salvá-los em um novo
@@ -463,7 +463,7 @@ utilizando para tanto a função factor do R.
   Já em relação à distribuição das variáveis ``sensação térmica'' e
   ``temperatura'', podemos dizer que a análise dos gráficos de
   distribuição nos leva a concluir que pode existir uma distribuição
-  bimodal em amos os casos.
+  bimodal em ambos os casos.
 \item
   A variável relativa à velocidade do vento, por sua vez, traz uma
   assimetria positiva em sua distribuição.
@@ -1353,38 +1353,52 @@ trees) e não a última, com apenas 6 nós-folha.
 
 \section{Conclusão}\label{conclusuxe3o}
 
-Concluímos o presente projeto com a assunção de que o último modelo de
-regressão linear múltipla desenvolvido (modelo 3) foi o que mais se
-aproximou daquilo que consideramos ideal para prever novos valores para
-o número de alugueis de bicicletas, dadas as mesmas informações
-constantes ao data set bike sharing.
+Concluímos o presente projeto com a ideia de que o Modelo 3 de regressão
+linear múltipla representa a melhor abordagem para prever o número de
+aluguéis de bicicletas, considerando as informações disponíveis no data
+set de bike sharing. A nossa caminhada metodológica, desde a limpeza
+inicial dos dados até a meticulosa comparação dos modelos, foi
+fundamentada numa uma abordagem estruturada e detalhada.
 
-Desenvolvemos e construímos o modelo tendo por base as etapas iniciais
-de limpeza e exploração dos dados, passando posteriormente pela
-verificação dos pressupostos básicos para o desenvolvimento do modelo de
-regressào linear ,múltipla, divisão dos dados entre treino e teste e,
-por fim, a comparação de modelos até chegar àquele que consideramos o
-que melhor generaliza sobre os dados e os padrões relacionados, tendo
-como benchmark para comparação de modelos o coeficiente de determinação
-ajustado.
+Após a preparação dos dados, dedicamos uma fase crucial à seleção e
+validação dos pressupostos básicos necessários para o desenvolvimento do
+modelo regressão linear múltipla. Essa análise abrangente foi essencial
+para assegurar a validade das inferências e a robustez do modelo.
 
-Em seguida, como uma etapa extra, desenvolvemos duas árvores de decisão
-com vistas a efetuar a mesma tarefa de regressão para a variável
-dependente CNT do nosos conjunto de dados, senod uma com 8 nós-folha (a
-qual seria escolhida caso fossemos optar neste estudo por modleos de
-árvore de decisão) e outra com apenas 6 nós-folha.
+A divisão criteriosa dos dados em conjuntos de treino e teste foi
+realizada com o objetivo de garantir uma avaliação imparcial e rigorosa
+dos modelos propostos. Essa abordagem equitativa permitiu avaliar cada
+modelo sob condições justas, sem influência indevida dos dados.
 
-Desta feita, como próximas etapas do presente projeto poderíamos citar a
-aplicação e desenvolvimento de novos modelos em árvore para o mesmo
-conjunto de dados, como por exemplo Random Forest ou XGboost, com vistas
-a compará-los a tudo o que fora desenvolvido neste estudo e buscar
-aquele que melhor se adeque aos dados, sem contudo perder a capacidade
-de generalizar e prever sobre novos dados de teste e/ou validação..
+Para avaliar o desempenho dos modelos, escolhemos o coeficiente de
+determinação ajustado como nossa métrica principal. Essa escolha foi
+baseada na sua capacidade de fornecer uma avaliação abrangente e
+objetiva da capacidade de generalização e adequação dos modelos aos
+dados.
 
-Por fim, após a escolha do melhor modelo baseado em critérios objetivos
-seria possível construir a etapa de deploy para colocá-lo em produção em
-benefício da organização, ao utilizar para tanto ferramentas cloud e
-esteiras de CI/CD.
+Além da regressão linear múltipla, ampliamos a nossa análise
+desenvolvendo duas árvores de decisão como etapa adicional, sendo uma
+com 8 nós-folha (a qual seria escolhida caso fossemos optar neste estudo
+por modelos de árvore de decisão) e outra com apenas 6 nós-folha. Essa
+abordagem complementar enriqueceu a nossa compreensão sobre as melhores
+práticas para prever os aluguéis de bicicletas, ampliando os nossos
+insights.
+
+Olhando para o futuro, identificamos oportunidades empolgantes para
+aprimorar ainda mais nossa análise. A exploração e desenvolvimento de
+modelos baseados em árvores, como Random Forest ou XGBoost, representam
+próximos passos promissores. Esses modelos mais sofisticados têm o
+potencial de capturar nuances e padrões mais subtis nos dados,
+impulsionando a precisão e robustez das previsões.
+
+Após a seleção do modelo ideal, a próxima etapa do processo seria a fase
+de implantação, ao utilizar para tal ferramentas cloud e esteiras de
+CI/CD. Nessa etapa crucial, o modelo será integrado em um ambiente de
+produção, fornecendo insights valiosos para a tomada de decisões e o
+aprimoramento contínuo do sistema de compartilhamento de bicicletas.
+Esperamos que isso não apenas otimize a eficiência operacional, mas
+também melhore a experiência dos utilizadores e promova a
+sustentabilidade na comunidade.
 
 \textbf{O código fonte em R do presente trabalho consta ao link do
 reposiório a seguir:
